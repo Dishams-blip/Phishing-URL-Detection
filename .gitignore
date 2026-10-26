@@ -9,3 +9,4 @@ dataset/CEAS_08.csv
 dataset/Enron.csv
 dataset/safe_sites.xlsx
 random_forest.pkl
+dataset/phishtank.csv
