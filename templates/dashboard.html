@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PhishDetect Dashboard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(to bottom right, #cde3ff, #f1f7ff);
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden; /* ⛔ Prevent full page scroll */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1100px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 4px 25px rgba(0,0,0,0.1);
+      padding: 25px 30px;
+      height: 95vh; /* Fit nicely on screen */
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 15px;
+      flex-shrink: 0;
+    }
+
+    .header h2 {
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      color: #555;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .btn-primary, .btn-danger {
+      border: none;
+      border-radius: 8px;
+      padding: 9px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn-primary {
+      background: #007bff;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #0056b3;
+    }
+
+    .btn-danger {
+      background: #dc3545;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #a71d2a;
+    }
+
+    /* --- Stats Section (Lighter Look & Softer Design) --- */
+.stats-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+  flex-shrink: 0;
+}
+
+.stat-card {
+  flex: 1;
+  min-width: 200px;
+  background: #f8fbff;               /* Light pastel blue background */
+  border: 1px solid #e1ebf9;         /* Subtle border for definition */
+  border-radius: 14px;
+  text-align: center;
+  padding: 18px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.04); /* Very soft shadow */
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+}
+
+.stat-card h3 {
+  margin: 0;
+  font-size: 26px;
+  color: #0a58ca;                    /* Softer blue number */
+}
+
+.stat-card p {
+  margin-top: 5px;
+  color: #666;
+  font-weight: 500;
+}
+
+    /* History section (scrollable area) */
+    .history-section {
+      flex: 1; /* Take remaining height */
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+
+    .history-section h3 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    th {
+      background: #004aad;
+      color: white;
+      text-align: left;
+      padding: 12px 15px;
+      font-weight: 500;
+    }
+
+    td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
+      color: #444;
+    }
+
+    tr:hover {
+      background: #f8faff;
+    }
+
+    .status-safe {
+      color: green;
+      font-weight: 600;
+    }
+
+    .status-phishing {
+      color: red;
+      font-weight: 600;
+    }
+
+    .status-non {
+      color: gray;
+      font-weight: 600;
+    }
+
+    .delete-btn {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .delete-btn:hover {
+      background-color: #a71d2a;
+    }
+
+    /* Hide scrollbar (optional aesthetic tweak) */
+    .history-section::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .history-section::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 8px;
+    }
+
+    .history-section::-webkit-scrollbar-thumb:hover {
+      background: #aaa;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>👋 Welcome, {{ user.username }}</h2>
+      <p><b>Email:</b> {{ user.email }}</p>
+      <div class="btn-group">
+        <a href="/check"><button class="btn-primary">🔍 Check New URL</button></a>
+        <a href="/logout"><button class="btn-danger">🚪 Logout</button></a>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <h3>{{ stats.total }}</h3>
+        <p>Total URLs</p>
+      </div>
+      <div class="stat-card">
+        <h3 style="color:red;">{{ stats.phishing_count }}</h3>
+        <p>Phishing</p>
+      </div>
+      <div class="stat-card">
+        <h3 style="color:green;">{{ stats.safe_count }}</h3>
+        <p>Safe</p>
+      </div>
+      <div class="stat-card">
+        <h3 style="color:gray;">{{ stats.non_existing_count }}</h3>
+        <p>Non-existing</p>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="history-section">
+      <h3>🧾 URL History</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>URL</th>
+            <th>Result</th>
+            <th>Checked At</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for h in history %}
+          <tr>
+            <td>{{ h.url }}</td>
+            <td>
+              {% if "Safe" in h.result %}
+                <span class="status-safe">Safe</span>
+              {% elif "Phishing" in h.result %}
+                <span class="status-phishing">Phishing</span>
+              {% else %}
+                <span class="status-non">Non-existing</span>
+              {% endif %}
+            </td>
+            <td>{{ h.checked_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td>
+              <form method="POST" action="/delete_history/{{ h.id }}">
+                <button class="delete-btn">🗑 Delete</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <form method="POST" action="/delete_all_history" style="margin-top:15px; text-align:center;">
+        <button class="btn-danger">🗑 Delete All History</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

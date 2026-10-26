@@ -1,0 +1,11 @@
+venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.env
+dataset/safe_urls.csv
+dataset/phishing_email.csv
+dataset/CEAS_08.csv
+dataset/Enron.csv
+dataset/safe_sites.xlsx
+random_forest.pkl
